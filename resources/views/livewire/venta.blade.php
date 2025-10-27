@@ -5,36 +5,82 @@
         <div class="absolute right-0 top-1/2 transform -translate-y-2/4 w-1/4 border-t-2 border-gray-300"></div>
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white p-4 rounded-lg shadow-md col-span-1">
-            <h2 class="text-xl font-semibold mb-4">Datos del Cliente</h2>
-            <input wire:model="ciCliente" wire:keydown.enter="buscarCliente" type="text"
-                placeholder="Ingrese CI del Cliente..."
-                class="w-full p-2 border rounded-md mb-4 text-sm">
+        <div class="bg-white p-5 rounded-2xl shadow-md col-span-1 border border-gray-100">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <i class="fas fa-user text-red-600"></i> Datos del Cliente
+    </h2>
 
+    <div class="space-y-3">
+        <div wire:ignore class="mt-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Buscar Cliente:</label>
+            <select id="select2Cliente" class="w-full form-control" style="width: 100%">
+                <option value="">Seleccione un cliente</option>
+                @foreach($clientes as $c)
+                    <option value="{{ $c->id_cliente }}">{{ $c->nombre }} - {{ $c->telefono }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        @push('scripts')
+        <script>
+            function inicializarSelect2Cliente() {
+                $('#select2Cliente').select2({
+                    placeholder: 'Buscar cliente...',
+                    allowClear: true,
+                    width: 'resolve',
+                });
+
+                $('#select2Cliente').off('change').on('change', function (e) {
+                    var clienteId = $(this).val();
+                    @this.set('clienteId', clienteId);
+                });
+            }
+
+            $(document).ready(function () {
+                inicializarSelect2Cliente();
+            });
+
+            document.addEventListener('livewire:load', function () {
+                Livewire.hook('message.processed', (message, component) => {
+                    inicializarSelect2Cliente();
+                });
+            });
+        </script>
+        @endpush
+
+
+
+        <div class="flex gap-2">
             <button wire:click="buscarCliente"
-                class="bg-red-600 text-white w-full py-2 rounded-md hover:bg-red-700 transition duration-300">
-                Buscar Cliente
+                class="flex-1 bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center justify-center gap-2">
+                <i class="fas fa-search"></i> Buscar
             </button>
             <button wire:click="openModalReceta"
-                class="bg-red-600 text-white w-full py-2 rounded-md hover:bg-red-700 transition duration-300">
-                Registrar Receta
+                class="flex-1 bg-gray-700 text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition duration-300 flex items-center justify-center gap-2">
+                <i class="fas fa-file-medical"></i> Receta
             </button>
-
-            @error('clienteId')
-                <span class="text-red-600 text-sm mt-2 block">{{$message}}</span>
-            @enderror
-
-            <!-- Datos del Cliente (se muestran si existe un cliente) -->
-            @if($clienteId)
-                <div class="mt-4 space-y-3">
-                    <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                    <input type="text" class="w-full p-2 border rounded-md bg-gray-100" value="{{ $nombre }}" disabled>
-
-                    <label class="block text-sm font-medium text-gray-700">Telefono</label>
-                    <input type="text" class="w-full p-2 border rounded-md bg-gray-100" value="{{ $telefono }}" disabled>
-                </div>
-            @endif
         </div>
+
+        @error('clienteId')
+            <span class="text-red-600 text-sm mt-2 block">{{ $message }}</span>
+        @enderror
+    </div>
+
+    @if($clienteId)
+        <div class="mt-5 border-t pt-4 space-y-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                <input type="text" class="w-full p-2 border rounded-md bg-gray-100" value="{{ $nombre }}" disabled>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+                <input type="text" class="w-full p-2 border rounded-md bg-gray-100" value="{{ $telefono }}" disabled>
+            </div>
+        </div>
+    @endif
+</div>
+
 
         <!-- Sección de Productos -->
         <div class="col-span-3 space-y-4">
@@ -159,8 +205,6 @@
     <script>
         window.addEventListener('alerta-controlado', event => {
             alert(event.detail.message);
-            // También podrías usar SweetAlert o Toast si prefieres
-            // Swal.fire({ icon: 'warning', title: 'Atención', text: event.detail.message });
         });
     </script>
 

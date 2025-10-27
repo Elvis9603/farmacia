@@ -54,6 +54,7 @@ class Venta extends Component
     {
         $tipos = TipoModel::all();
         $this->tiposPago = PagoModel::all(); 
+        $this->clientes = ClienteModel::select('id_cliente', 'nombre', 'telefono')->get();
         $this->id_pago = PagoModel::where('nombre', 'Efectivo')->value('id_pago');
         $this->productos = ProductoModel::where('id_tipo',$this->id_tipo)
         ->where('nombre','like','%'.$this->searchProducto.'%')
@@ -122,6 +123,18 @@ class Venta extends Component
             $this->reset(['clienteId', 'nombre', 'telefono']);
         }
     }
+    public function updatedClienteId($value)
+    {
+        $cliente = ClienteModel::find($value);
+        if ($cliente) {
+            $this->nombre = $cliente->nombre;
+            $this->telefono = $cliente->telefono;
+        } else {
+            $this->reset(['nombre', 'telefono']);
+        }
+    }
+
+
 
     public function openModalReceta()
     {
