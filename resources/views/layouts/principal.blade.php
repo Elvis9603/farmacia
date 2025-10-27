@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/flowbite@2.3.0/dist/flowbite.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @stack('scripts')
+
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
     @livewireStyles
@@ -22,6 +28,11 @@
                 <span class="text-xl font-bold text-green-700">LimberthPool</span>
             </div>
 
+            <!-- Notificaciones -->
+            <div class="mr-4">
+                @livewire('notificaciones')
+            </div>
+            
             <!-- Usuario -->
             @auth('web')
             <div class="relative">
@@ -84,6 +95,50 @@
                     <a href="{{ route('clientes.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fa-solid fa-user-tag w-5 text-gray-500"></i>
                         <span class="ml-3">Clientes</span>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="{{ route('pedidos.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-clipboard-list w-5 text-gray-500"></i>
+                        <span class="ml-3">Pedidos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cambios.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-exchange-alt w-5 text-gray-500"></i>
+                        <span class="ml-3">Cambios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('promociones.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-percent w-5 text-gray-500"></i>
+                        <span class="ml-3">Promociones</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('proveedores.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-truck-ramp-box w-5 text-gray-500"></i>
+                        <span class="ml-3">Proveedores</span>
+                    </a>
+                </li>
+
+                <!-- Control de vencimientos -->
+                <li>
+                    <a href="{{ route('vencimientos.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-calendar-check w-5 text-gray-500"></i>
+                        <span class="ml-3">Control de Vencimientos</span>
+                        @php
+                            $totalAlertas = \App\Models\ProductoModel::vencidos()->count() + 
+                                         \App\Models\ProductoModel::proximosAVencer(30)->count();
+                        @endphp
+                        @if($totalAlertas > 0)
+                            <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1 -translate-y-1 bg-red-500 rounded-full">
+                                {{ $totalAlertas }}
+                            </span>
+                        @endif
                     </a>
                 </li>
 
