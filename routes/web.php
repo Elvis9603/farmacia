@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoriasController;
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReportesController;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -20,6 +21,13 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
     Route::get('/categorias', [CategoriasController::class, 'index'])->name('categorias.index');
+    Route::get('/reportes/ventas', [ReportesController::class, 'ventas'])->name('reportes.ventas');
+    Route::get('/reportes/ventas/pdf', [ReportesController::class, 'exportPDF'])->name('reportes.ventas.pdf');
+    Route::get('/reportes/inventario', [ReportesController::class, 'inventario'])->name('reportes.inventario');
+    Route::get('/reportes/inventario/pdf', [ReportesController::class, 'exportInventarioPDF'])->name('reportes.inventario.pdf');
+    Route::get('/reportes/felcc/pdf', [ReportesController::class, 'exportInventario2PDF'])->name('reportes.felcc.pdf');
+    
+    
 });
 // Route::middleware([
 //     'auth:sanctum',

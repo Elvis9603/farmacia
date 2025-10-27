@@ -98,12 +98,12 @@
                     </button>
                     <ul id="dropdown-reportes" class="hidden py-2 space-y-2">
                         <li>
-                            <a href="#" class="flex items-center w-full p-2 pl-11 text-gray-700 rounded-lg hover:bg-green-50 dark:text-gray-200 dark:hover:bg-gray-700">
+                            <a href="{{ route('reportes.ventas') }}" class="flex items-center w-full p-2 pl-11 text-gray-700 rounded-lg hover:bg-green-50 dark:text-gray-200 dark:hover:bg-gray-700">
                                 Ventas
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center w-full p-2 pl-11 text-gray-700 rounded-lg hover:bg-green-50 dark:text-gray-200 dark:hover:bg-gray-700">
+                            <a href="{{ route('reportes.inventario') }}" class="flex items-center w-full p-2 pl-11 text-gray-700 rounded-lg hover:bg-green-50 dark:text-gray-200 dark:hover:bg-gray-700">
                                 Inventario
                             </a>
                         </li>
