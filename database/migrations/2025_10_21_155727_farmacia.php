@@ -3,64 +3,62 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
-            $table->string('nombre',length:80);
-            $table->string('telefono',length:30);
-            $table->string('turno',length:80);
-            $table->string('usuario',length:80)->unique();
-            $table->string('contrasena',length:255);
+            $table->string('nombre', 80);
+            $table->string('telefono', 30);
+            $table->string('turno', 80);
+            $table->string('usuario', 80)->unique();
+            $table->string('contrasena', 255);
             $table->enum('rol', ['administrador', 'farmaceutico']);
             $table->timestamps();
         });
-        
+
         Schema::create('cliente', function (Blueprint $table) {
             $table->id('id_cliente');
-            $table->string('nombre',length:80);
-            $table->string('telefono',length:30);
-            $table->string('ci',length:30)->unique();
-            $table->string('direccion',length:50);
+            $table->string('nombre', 80);
+            $table->string('telefono', 30);
+            $table->string('ci', 30)->unique();
+            $table->string('direccion', 50);
             $table->timestamps();
         });
 
         Schema::create('proveedor', function (Blueprint $table) {
             $table->id('id_proveedor');
-            $table->string('nombre',length:80);
+            $table->string('nombre', 80);
             $table->enum('tipo', ['distribuidora', 'individual']);
-            $table->string('telefono',length:30);
+            $table->string('telefono', 30);
             $table->integer('diasCambioAntesVencimiento');
             $table->timestamps();
         });
 
         Schema::create('presentacion', function (Blueprint $table) {
             $table->id('id_presentacion');
-            $table->string('tipoPresentacion',length:80);
-            $table->string('codigo',length:30)->unique();
+            $table->string('tipoPresentacion', 80);
+            $table->string('codigo', 30)->unique();
             $table->timestamps();
         });
 
         Schema::create('tipo', function (Blueprint $table) {
             $table->id('id_tipo');
-            $table->string('foto',length:80);
-            $table->string('nombre',length:80);
+            $table->string('foto', 80);
+            $table->string('nombre', 80);
             $table->timestamps();
         });
 
         Schema::create('producto', function (Blueprint $table) {
             $table->id('id_producto');
-            $table->string('nombre',length:80);
-            $table->string('foto',length:80)->nullable();
+            $table->string('nombre', 80);
+            $table->string('foto', 80)->nullable();
             $table->unsignedBigInteger('id_tipo');
-            $table->decimal('precioCompra',total:8,places:2);
-            $table->decimal('precioVenta',total:8,places:2);
+            $table->decimal('precioCompra', 8, 2);
+            $table->decimal('precioVenta', 8, 2);
             $table->integer('descuento')->default(0);
             $table->integer('stock')->default(0);
             $table->integer('stockMinimo');
@@ -79,21 +77,21 @@ return new class extends Migration
         Schema::create('pedido', function (Blueprint $table) {
             $table->id('id_pedido');
             $table->date('fecha');
-            $table->decimal('total',total:8,places:2);
+            $table->decimal('total', 8, 2);
             $table->unsignedBigInteger('id_proveedor');
             $table->enum('estado', ['pendiente', 'recibido']);
             $table->timestamps();
+
             $table->foreign('id_proveedor')->references('id_proveedor')->on('proveedor');
         });
-
 
         Schema::create('detalle_pedido', function (Blueprint $table) {
             $table->id('id_detalle');
             $table->unsignedBigInteger('id_pedido');
             $table->unsignedBigInteger('id_producto');
-            $table->decimal('precio_unitario',total:8,places:2);
+            $table->decimal('precio_unitario', 8, 2);
             $table->integer('cantidad')->default(0);
-            $table->decimal('subtotal',total:8,places:2);
+            $table->decimal('subtotal', 8, 2);
             $table->timestamps();
 
             $table->foreign('id_pedido')->references('id_pedido')->on('pedido');
@@ -103,47 +101,45 @@ return new class extends Migration
         Schema::create('devolucion', function (Blueprint $table) {
             $table->id('id_devolucion');
             $table->date('fecha');
-            $table->string('motivo',length:80);
+            $table->string('motivo', 80);
             $table->unsignedBigInteger('id_proveedor');
             $table->enum('estado', ['pendiente', 'recibido']);
             $table->timestamps();
+
             $table->foreign('id_proveedor')->references('id_proveedor')->on('proveedor');
         });
-
 
         Schema::create('detalle_devolucion', function (Blueprint $table) {
             $table->id('id_detalle');
             $table->unsignedBigInteger('id_devolucion');
             $table->unsignedBigInteger('id_producto');
-            $table->decimal('precio_unitario',total:8,places:2);
+            $table->decimal('precio_unitario', 8, 2);
             $table->integer('cantidad')->default(0);
-            $table->decimal('subtotal',total:8,places:2);
+            $table->decimal('subtotal', 8, 2);
             $table->timestamps();
-            
+
             $table->foreign('id_devolucion')->references('id_devolucion')->on('devolucion');
             $table->foreign('id_producto')->references('id_producto')->on('producto');
         });
 
-
         Schema::create('pago', function (Blueprint $table) {
             $table->id('id_pago');
-            $table->string('nombre',length:80);
+            $table->string('nombre', 80);
             $table->timestamps();
         });
-        
+
         Schema::create('receta', function (Blueprint $table) {
             $table->id('id_receta');
             $table->date('fechaEmision');
-            $table->string('nombreDoctor',length:80);
-            $table->string('diagnostico',length:80);
+            $table->string('nombreDoctor', 80);
+            $table->string('diagnostico', 80);
             $table->timestamps();
         });
-
 
         Schema::create('venta', function (Blueprint $table) {
             $table->id('id_venta');
             $table->date('fecha');
-            $table->decimal('total',total:8,places:2);
+            $table->decimal('total', 8, 2);
             $table->enum('tipoVEnta', ['libre', 'controlado']);
             $table->unsignedBigInteger('id_receta')->nullable();
             $table->unsignedBigInteger('id_usuario');
@@ -158,26 +154,59 @@ return new class extends Migration
             $table->foreign('id_pago')->references('id_pago')->on('pago');
         });
 
-
         Schema::create('detalle_venta', function (Blueprint $table) {
             $table->id('id_detalle');
             $table->unsignedBigInteger('id_venta');
             $table->unsignedBigInteger('id_producto');
-            $table->decimal('precio_unitario',total:8,places:2);
+            $table->decimal('precio_unitario', 8, 2);
             $table->integer('cantidad')->default(0);
-            $table->decimal('subtotal',total:8,places:2);
+            $table->decimal('subtotal', 8, 2);
             $table->timestamps();
 
             $table->foreign('id_venta')->references('id_venta')->on('venta');
             $table->foreign('id_producto')->references('id_producto')->on('producto');
         });
+
+        // NUEVA TABLA DE PROMOCIONES
+        Schema::create('promocion', function (Blueprint $table) {
+            $table->id('id_promocion');
+            $table->unsignedBigInteger('id_producto');
+            $table->decimal('porcentaje_descuento', 5, 2);
+            $table->decimal('precio_original', 8, 2)->nullable();
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->timestamps();
+
+            $table->foreign('id_producto')->references('id_producto')->on('producto')->onDelete('cascade');
+        });
+
+        // Inserta proveedor por defecto
+        DB::table('proveedor')->insert([
+            'nombre' => 'sin proveedor',
+            'tipo' => 'individual',
+            'telefono' => '00000000',
+            'diasCambioAntesVencimiento' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('promocion');
+        Schema::dropIfExists('detalle_venta');
+        Schema::dropIfExists('venta');
+        Schema::dropIfExists('receta');
+        Schema::dropIfExists('pago');
+        Schema::dropIfExists('detalle_devolucion');
+        Schema::dropIfExists('devolucion');
+        Schema::dropIfExists('detalle_pedido');
+        Schema::dropIfExists('pedido');
+        Schema::dropIfExists('producto');
+        Schema::dropIfExists('tipo');
+        Schema::dropIfExists('presentacion');
+        Schema::dropIfExists('proveedor');
+        Schema::dropIfExists('cliente');
+        Schema::dropIfExists('usuario');
     }
 };

@@ -6,6 +6,9 @@ use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\PedidosController;
+use App\Http\Controllers\PromocionesController;
+use App\Http\Controllers\CambiosController;
 
 
 use App\Http\Controllers\AuthController;
@@ -20,6 +23,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
     Route::get('/categorias', [CategoriasController::class, 'index'])->name('categorias.index');
+    Route::get('/pedidos', [PedidosController::class, 'index'])->name('pedidos.index');
+    Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones.index');
+    Route::get('/cambios', [CambiosController::class, 'index'])->name('cambios.index');
 });
 // Route::middleware([
 //     'auth:sanctum',

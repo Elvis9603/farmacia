@@ -86,6 +86,24 @@
                         <span class="ml-3">Clientes</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('pedidos.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-user-tag w-5 text-gray-500"></i>
+                        <span class="ml-3">Pedidos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cambios.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-user-tag w-5 text-gray-500"></i>
+                        <span class="ml-3">Cambios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('promociones.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-user-tag w-5 text-gray-500"></i>
+                        <span class="ml-3">Promociones</span>
+                    </a>
+                </li>
 
                 <!-- Reportes con submenú -->
                 <li>
