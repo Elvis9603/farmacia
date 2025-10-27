@@ -21,6 +21,7 @@
                     <th class="px-4 py-2">Proveedor</th>
                     <th class="px-4 py-2">Motivo</th>
                     <th class="px-4 py-2">Estado</th>
+                    <th class="px-4 py-2">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,13 +31,25 @@
                         <td class="px-4 py-2">{{ $d->fecha }}</td>
                         <td class="px-4 py-2">{{ \App\Models\ProveedorModel::find($d->id_proveedor)->nombre ?? 'N/A' }}</td>
                         <td class="px-4 py-2">{{ $d->motivo }}</td>
-                        <td class="px-4 py-2">{{ $d->estado }}</td>
+                        <td class="px-4 py-2">{{ ucfirst($d->estado) }}</td>
+                        <td class="px-4 py-2">
+                            @if($d->estado == 'pendiente')
+                                <!-- MODIFICADO: ahora abre modal -->
+                                <button wire:click="abrirModalRecibir({{ $d->id_devolucion }})"
+                                        class="bg-blue-500 text-white px-3 py-1 rounded">
+                                    Marcar recibido
+                                </button>
+                            @else
+                                <span class="text-sm text-gray-600">Recibido</span>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 
+    <!-- ===================== MODAL DE REGISTRAR DEVOLUCIÓN ===================== -->
     @if($showModal)
         <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg w-11/12 md:w-3/4 p-6">
@@ -118,6 +131,48 @@
                 <div class="flex justify-end mt-4 space-x-2">
                     <button wire:click="guardarCambio" class="bg-red-600 text-white px-4 py-2 rounded">Guardar</button>
                     <button wire:click="$set('showModal', false)" class="bg-gray-300 px-4 py-2 rounded">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- ===================== NUEVO MODAL: EDITAR FECHAS AL MARCAR RECIBIDO ===================== -->
+    @if($showModalRecibir)
+        <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg w-11/12 md:w-3/4 p-6">
+                <h3 class="text-xl mb-4 font-bold">Editar Fechas de Vencimiento</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm border">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-3 py-2 border">Producto</th>
+                                <th class="px-3 py-2 border">Cantidad</th>
+                                <th class="px-3 py-2 border">Fecha Vencimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($detallesRecibir as $index => $det)
+                                <tr>
+                                    <td class="border px-3 py-2">{{ $det['nombre'] }}</td>
+                                    <td class="border px-3 py-2 text-center">{{ $det['cantidad'] }}</td>
+                                    <td class="border px-3 py-2">
+                                        <input type="date" wire:model="detallesRecibir.{{ $index }}.fechaVencimiento"
+                                               class="border rounded px-2 py-1 w-full">
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-end mt-4 space-x-2">
+                    <button wire:click="marcarRecibido" class="bg-blue-600 text-white px-4 py-2 rounded">
+                        Guardar y Confirmar
+                    </button>
+                    <button wire:click="$set('showModalRecibir', false)" class="bg-gray-300 px-4 py-2 rounded">
+                        Cancelar
+                    </button>
                 </div>
             </div>
         </div>

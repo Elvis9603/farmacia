@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 class Cambios extends Component
 {
     public $showModal = false;
+    public $showModalRecibir = false;
 
     public $fecha;
     public $motivo = '';
@@ -18,6 +19,10 @@ class Cambios extends Component
 
     public $proveedores = [];
     public $productos = [];
+
+    // Nuevas propiedades para marcar recibido
+    public $devolucionSeleccionada = null;
+    public $detallesRecibir = [];
 
     public function mount()
     {
@@ -151,5 +156,60 @@ class Cambios extends Component
         session()->flash('message', 'Devolución registrada correctamente.');
         $this->resetForm();
         $this->showModal = false;
+    }
+
+    // === ABRIR MODAL DE MARCAR RECIBIDO ===
+    public function abrirModalRecibir($id_devolucion)
+    {
+        $this->devolucionSeleccionada = $id_devolucion;
+        $this->detallesRecibir = [];
+
+        $detalles = DB::table('detalle_devolucion')
+            ->join('producto', 'detalle_devolucion.id_producto', '=', 'producto.id_producto')
+            ->select('detalle_devolucion.*', 'producto.nombre', 'producto.fechaVencimiento')
+            ->where('id_devolucion', $id_devolucion)
+            ->get();
+
+        foreach ($detalles as $det) {
+            $this->detallesRecibir[] = [
+                'id_producto' => $det->id_producto,
+                'nombre' => $det->nombre,
+                'cantidad' => $det->cantidad,
+                'fechaVencimiento' => $det->fechaVencimiento,
+            ];
+        }
+
+        $this->showModalRecibir = true;
+    }
+
+    // === CONFIRMAR RECEPCIÓN Y ACTUALIZAR FECHAS ===
+    public function marcarRecibido()
+    {
+        if (!$this->devolucionSeleccionada) return;
+
+        DB::transaction(function () {
+            DB::table('devolucion')
+                ->where('id_devolucion', $this->devolucionSeleccionada)
+                ->update(['estado' => 'recibido', 'updated_at' => now()]);
+
+            foreach ($this->detallesRecibir as $det) {
+                // Incrementar stock
+                DB::table('producto')
+                    ->where('id_producto', $det['id_producto'])
+                    ->increment('stock', $det['cantidad']);
+
+                // Actualizar fecha de vencimiento
+                if (!empty($det['fechaVencimiento'])) {
+                    DB::table('producto')
+                        ->where('id_producto', $det['id_producto'])
+                        ->update(['fechaVencimiento' => $det['fechaVencimiento']]);
+                }
+            }
+        });
+
+        session()->flash('message', 'Devolución marcada como recibida y fechas actualizadas.');
+        $this->showModalRecibir = false;
+        $this->devolucionSeleccionada = null;
+        $this->detallesRecibir = [];
     }
 }
