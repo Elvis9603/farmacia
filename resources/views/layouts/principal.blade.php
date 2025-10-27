@@ -22,6 +22,11 @@
                 <span class="text-xl font-bold text-green-700">LimberthPool</span>
             </div>
 
+            <!-- Notificaciones -->
+            <div class="mr-4">
+                @livewire('notificaciones')
+            </div>
+            
             <!-- Usuario -->
             @auth('web')
             <div class="relative">
@@ -86,6 +91,8 @@
                         <span class="ml-3">Clientes</span>
                     </a>
                 </li>
+
+
                 <li>
                     <a href="{{ route('pedidos.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fa-solid fa-user-tag w-5 text-gray-500"></i>
@@ -102,6 +109,30 @@
                     <a href="{{ route('promociones.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
                         <i class="fa-solid fa-user-tag w-5 text-gray-500"></i>
                         <span class="ml-3">Promociones</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('proveedores.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-truck-ramp-box w-5 text-gray-500"></i>
+                        <span class="ml-3">Proveedores</span>
+                    </a>
+                </li>
+
+                <!-- Control de vencimientos -->
+                <li>
+                    <a href="{{ route('vencimientos.index') }}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-green-100 dark:text-white dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-calendar-exclamation w-5 text-gray-500"></i>
+                        <span class="ml-3">Control de Vencimientos</span>
+                        @php
+                            $totalAlertas = \App\Models\ProductoModel::vencidos()->count() + 
+                                         \App\Models\ProductoModel::proximosAVencer(30)->count();
+                        @endphp
+                        @if($totalAlertas > 0)
+                            <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1 -translate-y-1 bg-red-500 rounded-full">
+                                {{ $totalAlertas }}
+                            </span>
+                        @endif
                     </a>
                 </li>
 
