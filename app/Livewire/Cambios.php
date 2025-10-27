@@ -133,7 +133,7 @@ class Cambios extends Component
                 'estado' => 'pendiente',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
+            ], 'id_devolucion');
 
             foreach ($this->items as $it) {
                 DB::table('detalle_devolucion')->insert([
