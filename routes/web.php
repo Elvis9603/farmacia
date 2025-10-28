@@ -31,6 +31,13 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/reportes/inventario', [ReportesController::class, 'inventario'])->name('reportes.inventario');
     Route::get('/reportes/inventario/pdf', [ReportesController::class, 'exportInventarioPDF'])->name('reportes.inventario.pdf');
     Route::get('/reportes/felcc/pdf', [ReportesController::class, 'exportInventario2PDF'])->name('reportes.felcc.pdf');
+
+    Route::get('/reportes/ventas/controladas', [ReportesController::class, 'ventasControladas'])->name('reportes.ventas.controladas');
+    Route::get('/reportes/ventas/controladas/pdf', [ReportesController::class, 'exportVentasControladasPDF'])->name('reportes.ventas.controladas.pdf');
+
+    Route::get('/reportes/ventas/receta/pdf', [ReportesController::class, 'exportVentasRecetaPDF'])
+    ->name('reportes.ventas.receta.pdf');
+
     Route::get('/pedidos', [PedidosController::class, 'index'])->name('pedidos.index');
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones.index');
     Route::get('/cambios', [CambiosController::class, 'index'])->name('cambios.index');
@@ -43,12 +50,3 @@ Route::middleware(['auth:web'])->group(function () {
         Route::get('/proximos/{dias?}', [VencimientoController::class, 'proximosAVencer'])->name('vencimientos.proximos');
     });
 });
-// Route::middleware([
-//     'auth:sanctum',
-//     config('jetstream.auth_session'),
-//     'verified',
-// ])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('dashboard');
-//     })->name('dashboard');
-// });

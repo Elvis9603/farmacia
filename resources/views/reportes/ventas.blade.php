@@ -3,16 +3,16 @@
 @section('content')
 <div class="container mx-auto p-6">
     <h2 class="text-2xl font-bold mb-4">Reporte de Ventas</h2>
-    <form method="GET" action="{{ route('reportes.ventas') }}" class="mb-4">
+    <form id="filterForm" method="GET" action="{{ route('reportes.ventas') }}" class="mb-4">
         <div class="flex items-center space-x-4 mb-4">
             <div class="flex items-center">
                 <label for="fecha_inicio" class="mr-2">Fecha Inicio:</label>
-                <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ request()->fecha_inicio }}" class="p-2 border rounded">
+                <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ request()->fecha_inicio ?? now()->subDays(30)->toDateString() }}" class="p-2 border rounded">
             </div>
 
             <div class="flex items-center">
                 <label for="fecha_fin" class="mr-2">Fecha Fin:</label>
-                <input type="date" id="fecha_fin" name="fecha_fin" value="{{ request()->fecha_fin }}" class="p-2 border rounded">
+                <input type="date" id="fecha_fin" name="fecha_fin" value="{{ request()->fecha_fin ?? now()->toDateString() }}" class="p-2 border rounded">
             </div>
 
             <div class="flex items-center">
@@ -35,6 +35,12 @@
     </form>
     <div class="mb-4">
         <a href="{{ route('reportes.ventas.pdf', request()->all()) }}" class="p-2 bg-blue-600 text-white rounded mr-2">Descargar PDF</a>
+    </div>
+    <div class="mb-4">
+        <a href="{{ route('reportes.ventas.receta.pdf', request()->all()) }}" class="p-2 bg-green-600 text-white rounded">
+            Descargar Reporte Ventas con Receta (PDF)
+        </a>
+
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full table-auto border-collapse border border-gray-300">
@@ -67,4 +73,14 @@
         </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Si no hay query string, enviar el formulario con los valores por defecto para mostrar resultados al cargar.
+    if (!window.location.search || window.location.search === '') {
+        var form = document.getElementById('filterForm');
+        if (form) form.submit();
+    }
+});
+</script>
 @endsection
