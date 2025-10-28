@@ -38,7 +38,7 @@ class ReportesController extends Controller
             $semana = $request->input('semana');
             $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY)->subWeeks($semana - 1);
             $endOfWeek = $startOfWeek->copy()->endOfWeek();
-            $query->whereBetween('fecha_venta', [$startOfWeek, $endOfWeek]);
+            $query->whereBetween('fecha', [$startOfWeek, $endOfWeek]);
         }
         if ($request->has('usuario_id')) {
             $usuarioId = $request->input('usuario_id');
@@ -104,4 +104,67 @@ class ReportesController extends Controller
         $dompdf->render();
         return $dompdf->stream('inventario_controlados.pdf');
     }
+    public function ventasControladas(Request $request)
+    {
+        $query = \App\Models\VentaModel::with(['cliente', 'receta', 'detalleVentas.producto'])
+            ->where('tipoVenta', 'controlado');
+
+        if ($request->filled('fecha_inicio') && $request->filled('fecha_fin')) {
+            $fechaInicio = Carbon::parse($request->fecha_inicio)->startOfDay();
+            $fechaFin = Carbon::parse($request->fecha_fin)->endOfDay();
+            $query->whereBetween('fecha', [$fechaInicio, $fechaFin]);
+        } else {
+            // Por defecto, solo las de hoy
+            $query->whereDate('fecha', Carbon::today());
+        }
+
+        $ventas = $query->get();
+        return view('reportes.ventas_controladas', compact('ventas'));
+    }
+
+    public function exportVentasControladasPDF(Request $request)
+    {
+        $query = \App\Models\VentaModel::with(['cliente', 'receta', 'detalleVentas.producto'])
+            ->where('tipoVenta', 'controlado');
+
+        if ($request->filled('fecha_inicio') && $request->filled('fecha_fin')) {
+            $fechaInicio = Carbon::parse($request->fecha_inicio)->startOfDay();
+            $fechaFin = Carbon::parse($request->fecha_fin)->endOfDay();
+            $query->whereBetween('fecha', [$fechaInicio, $fechaFin]);
+        } else {
+            $query->whereDate('fecha', Carbon::today());
+        }
+
+        $ventas = $query->get();
+
+        $html = view('reportes.pdfVentasControladas', compact('ventas'))->render();
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+        return $dompdf->stream('ventas_controladas.pdf');
+    }
+
+    public function exportVentasRecetaPDF(Request $request)
+    {
+        $query = \App\Models\VentaModel::with(['cliente', 'usuario', 'detalleVentas.producto', 'receta'])
+            ->whereHas('receta'); // Solo ventas que tienen receta
+
+        if ($request->has('fecha_inicio') && $request->has('fecha_fin')) {
+            $fechaInicio = \Carbon\Carbon::parse($request->input('fecha_inicio'))->startOfDay();
+            $fechaFin = \Carbon\Carbon::parse($request->input('fecha_fin'))->endOfDay();
+            $query->whereBetween('fecha', [$fechaInicio, $fechaFin]);
+        }
+
+        $ventas = $query->get();
+
+        $html = view('reportes.pdfVentasReceta', compact('ventas'))->render();
+        $dompdf = new \Dompdf\Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        return $dompdf->stream('ventas_receta.pdf');
+    }
+
 }
