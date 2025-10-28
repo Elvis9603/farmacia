@@ -122,26 +122,30 @@
             <!-- Lista de productos -->
             <div class="bg-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 rounded-lg shadow-md">
                 @forelse ($productos->where('stock', '>', 0) as $item)
-                    <div class="flex items-center p-4 border border-gray-300 rounded-lg">
-                        <!-- Imagen del producto -->
-                        <div class="shrink-0 -ml-2"> 
-                            <img class="w-24 h-24 rounded-lg object-cover" src="/storage/img/{{$item->foto}}" alt="Producto">
-                        </div>
+                    <div class="flex items-center p-3 border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition">
+    <!-- Imagen del producto -->
+    <div class="shrink-0">
+        <img class="w-20 h-20 rounded-md object-cover object-center -ml-2" 
+             src="/storage/img/{{$item->foto}}" 
+             alt="Producto">
+    </div>
 
-                        <!-- Información del producto -->
-                        <div class="flex-1 min-w-0 ml-4">
-                            <p class="text-sm font-medium text-black truncate">{{$item->nombre}}</p>
-                            <p class="text-sm font-medium text-black truncate">Bs. {{$item->precioVenta}}</p>
-                            <p class="text-sm text-gray-500 truncate">Disp.: {{$item->stock}}</p>
-                        </div>
+    <!-- Información del producto -->
+    <div class="flex-1 min-w-0 ml-3">
+        <p class="text-sm font-semibold text-gray-900 truncate">{{$item->nombre}}</p>
+        <p class="text-sm font-medium text-green-700 truncate">Bs. {{$item->precioVenta}}</p>
+        <p class="text-xs text-gray-500 truncate">Stock: {{$item->stock}}</p>
+    </div>
 
-                        <!-- Botón agregar -->
-                        <div>
-                            <button wire:click="addProducto({{$item->id_producto}})" class="bg-green-600 w-10 h-10 rounded-full text-white">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </div>
-                    </div>
+    <!-- Botón agregar -->
+    <div>
+        <button wire:click="addProducto({{$item->id_producto}})" 
+                class="bg-green-600 hover:bg-green-700 w-9 h-9 rounded-full text-white flex items-center justify-center transition">
+            <i class="fas fa-shopping-cart text-sm"></i>
+        </button>
+    </div>
+</div>
+
                 @empty
                     <p class="text-center text-gray-500">No hay Productos disponibles</p>
                 @endforelse

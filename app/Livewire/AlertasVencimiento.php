@@ -30,8 +30,19 @@ class AlertasVencimiento extends Component
         }
         
         // Agrupar productos por días de proveedor
-        if ($proximosVencer->count() > 0) {
-            $productosAgrupados = $proximosVencer->groupBy(function($producto) {
+        if (is_object($proximosVencer) && method_exists($proximosVencer, 'count')) {
+            if ($proximosVencer->count() > 0) {
+                $productosAgrupados = $proximosVencer->groupBy(function($producto) {
+                    if ($producto->proveedor && $producto->proveedor->diasCambioAntesVencimiento) {
+                        return $producto->proveedor->diasCambioAntesVencimiento;
+                    }
+                    return 30; // Valor por defecto
+                });
+            }
+        } else if (is_array($proximosVencer) && count($proximosVencer) > 0) {
+            // Convertir array a colección para usar groupBy
+            $proximosVencerCollection = collect($proximosVencer);
+            $productosAgrupados = $proximosVencerCollection->groupBy(function($producto) {
                 if ($producto->proveedor && $producto->proveedor->diasCambioAntesVencimiento) {
                     return $producto->proveedor->diasCambioAntesVencimiento;
                 }

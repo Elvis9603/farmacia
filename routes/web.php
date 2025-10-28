@@ -26,16 +26,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
     Route::get('/categorias', [CategoriasController::class, 'index'])->name('categorias.index');
-<<<<<<< HEAD
     Route::get('/reportes/ventas', [ReportesController::class, 'ventas'])->name('reportes.ventas');
     Route::get('/reportes/ventas/pdf', [ReportesController::class, 'exportPDF'])->name('reportes.ventas.pdf');
     Route::get('/reportes/inventario', [ReportesController::class, 'inventario'])->name('reportes.inventario');
     Route::get('/reportes/inventario/pdf', [ReportesController::class, 'exportInventarioPDF'])->name('reportes.inventario.pdf');
     Route::get('/reportes/felcc/pdf', [ReportesController::class, 'exportInventario2PDF'])->name('reportes.felcc.pdf');
-    
-    
-=======
-
     Route::get('/pedidos', [PedidosController::class, 'index'])->name('pedidos.index');
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones.index');
     Route::get('/cambios', [CambiosController::class, 'index'])->name('cambios.index');
@@ -47,7 +42,6 @@ Route::middleware(['auth:web'])->group(function () {
         Route::get('/vencidos', [VencimientoController::class, 'vencidos'])->name('vencimientos.vencidos');
         Route::get('/proximos/{dias?}', [VencimientoController::class, 'proximosAVencer'])->name('vencimientos.proximos');
     });
->>>>>>> c95cf5490a5c346f64d765432de6bd02585e9bb9
 });
 // Route::middleware([
 //     'auth:sanctum',

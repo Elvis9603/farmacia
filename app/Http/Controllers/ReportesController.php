@@ -38,7 +38,7 @@ class ReportesController extends Controller
             $semana = $request->input('semana');
             $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY)->subWeeks($semana - 1);
             $endOfWeek = $startOfWeek->copy()->endOfWeek();
-            $query->whereBetween('fecha_venta', [$startOfWeek, $endOfWeek]);
+            $query->whereBetween('fecha', [$startOfWeek, $endOfWeek]);
         }
         if ($request->has('usuario_id')) {
             $usuarioId = $request->input('usuario_id');

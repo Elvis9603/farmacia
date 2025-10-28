@@ -27,4 +27,8 @@ class VentaModel extends Model
     {
         return $this->belongsTo(PagoModel::class, 'id_pago', 'id_pago');
     }
+    public function detalleVentas()
+    {
+        return $this->hasMany(\App\Models\DetalleVentaModel::class, 'id_venta');
+    }
 }

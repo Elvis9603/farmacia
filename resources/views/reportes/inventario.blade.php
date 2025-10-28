@@ -21,11 +21,6 @@
             Descargar PDF
         </a>
     </div>
-    <div class="mb-4">
-        <a href="{{ route('reportes.felcc.pdf', ['proveedor_id' => request('proveedor_id'), 'controlado' => 'Si']) }}" class="p-2 bg-blue-600 text-white rounded">
-            Descargar FELCC PDF
-        </a>
-    </div>
 
     <div class="overflow-x-auto">
         <table class="min-w-full table-auto">
